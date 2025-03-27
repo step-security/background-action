@@ -1,0 +1,42 @@
+name: 'background-action'
+branding:
+  color: orange
+  icon: terminal
+description: Background commands with log tailing/capture; waits until file/port/socket/http are ready to proceed. Isolates/dedupe errors.
+inputs:
+  run:
+    description: commands to run, supports multi-line commands (to background multiple processes, use & at the end of each line)
+    required: true
+
+  working-directory:
+    description: the current working directory for the shell running the commands
+    required: false
+
+  wait-on:
+    description: 'resources to wait on -- separated by commas or newlines, supported prefixes: [file,http,https,http-get,https-get,tcp,socket] (for advanced usage, pass a JSON serialized wait-on config)'
+    required: false
+
+  wait-for:
+    description: duration to wait for resources to be available (specify unit postfix, defaults to ms)
+    default: 30s
+
+  tail:
+    description: tail log output while waiting on resources to be available [stderr,stdout,true,false]
+    default: true
+
+  log-output:
+    description: specify which logs (stdout,stderr) to output post-run (after the run has completed or failed) (stderr,stdout,true,false)
+    default: stdout,stderr
+
+  log-output-resume:
+    description: truncate tailed stderr/stdout output from post-run logs (i.e. deduplicate log output) [stderr,stdout,true,false]
+    default: false
+
+  log-output-if:
+    description: control if post-run logging occurs (timeout,early-exit,failure,true,false)
+    default: true
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+  post: 'dist/index.js'
