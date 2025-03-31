@@ -5,7 +5,7 @@ require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const core = __nccwpck_require__(2186)
-const parseDuration = __nccwpck_require__(3805)
+const parseDuration = (__nccwpck_require__(4123)/* ["default"] */ .Z)
 
 function getRawInputs() {
     const run = core.getInput('run')
@@ -21209,102 +21209,6 @@ function plural(ms, msAbs, n, name) {
 
 /***/ }),
 
-/***/ 3805:
-/***/ ((module) => {
-
-"use strict";
-
-
-var durationRE = /(-?(?:\d+\.?\d*|\d*\.?\d+)(?:e[-+]?\d+)?)\s*([\p{L}]*)/uig
-
-module.exports = parse
-// enable default import syntax in typescript
-module.exports["default"] = parse
-
-/**
- * conversion ratios
- */
-
-parse.year =
-  parse.yr =
-  parse.y = 60000 * 60 * 24 * 365.25
-
-parse.month =
-  parse.b = 60000 * 60 * 24 * (365.25 / 12)
-
-parse.week =
-  parse.wk =
-  parse.w = 60000 * 60 * 24 * 7
-
-parse.day =
-  parse.d = 60000 * 60 * 24
-
-parse.hour =
-  parse.hr =
-  parse.h = 60000 * 60
-
-parse.minute =
-  parse.min =
-  parse.m = 60000
-
-parse.second =
-  parse.sec =
-  parse.s = 1000
-
-parse.millisecond =
-  parse.millisec =
-  parse.ms = 1
-
-parse['µs'] =
-  parse['μs'] =
-  parse.us =
-  parse.microsecond = 1 / 1e3
-
-parse.nanosecond =
-  parse.ns = 1 / 1e6
-
-
-/**
- * convert `str` to ms
- *
- * @param {String} str
- * @param {String} format
- * @return {Number}
- */
-
-function parse(str = '', format = 'ms') {
-  if (!Object.prototype.hasOwnProperty.call(parse, format)) {
-    throw new TypeError('Invalid format "' + format + '"')
-  }
-
-  var result = null, prevUnits
-  // ignore commas/placeholders
-  str = (str + '').replace(/(\d)[,_](\d)/g, '$1$2')
-  str.replace(durationRE, function (_, n, units) {
-    // if no units, find next smallest units or fall back to format value (ms)
-    if (!units) {
-      if (prevUnits) {
-        for (var u in parse) if (parse[u] < prevUnits) { units = u; break }
-      }
-      else units = format
-    }
-    else units = units.toLowerCase()
-    if (Object.prototype.hasOwnProperty.call(parse, units)) {
-      units = parse[units]
-    } else if (Object.prototype.hasOwnProperty.call(parse, units.replace(/s$/, ''))) {
-      units = parse[units.replace(/s$/, '')]
-    } else {
-      units = null
-    }
-    if (units) result = (result || 0) + Math.abs(parseFloat(n, 10)) * units, prevUnits = units
-  })
-
-  return result && ((result / (parse[format] || 1)) * (str[0] === '-' ? -1 : 1))
-}
-
-
-/***/ }),
-
 /***/ 3329:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -37379,6 +37283,79 @@ module.exports = axios;
 
 /***/ }),
 
+/***/ 4123:
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __nccwpck_require__) => {
+
+"use strict";
+
+// EXPORTS
+__nccwpck_require__.d(__webpack_exports__, {
+  "Z": () => (/* binding */ parse)
+});
+
+;// CONCATENATED MODULE: ./node_modules/parse-duration/locale/en.js
+const unit = Object.create(null)
+const m = 60000, h = m * 60, d = h * 24, y = d * 365.25
+
+unit.year = unit.yr = unit.y = y
+unit.month = unit.mo = unit.mth = y / 12
+unit.week = unit.wk = unit.w = d * 7
+unit.day = unit.d = d
+unit.hour = unit.hr = unit.h = h
+unit.minute = unit.min = unit.m = m
+unit.second = unit.sec = unit.s = 1000
+unit.millisecond = unit.millisec = unit.ms = 1
+unit.microsecond = unit.microsec =  unit.us = unit.µs = 1e-3
+unit.nanosecond = unit.nanosec = unit.ns = 1e-6
+
+unit.group = ','
+unit.decimal = '.'
+unit.placeholder = ' _'
+
+/* harmony default export */ const en = (unit);
+
+;// CONCATENATED MODULE: ./node_modules/parse-duration/index.js
+
+
+const durationRE = /((?:\d{1,16}(?:\.\d{1,16})?|\.\d{1,16})(?:[eE][-+]?\d{1,4})?)\s?([\p{L}]{0,14})/gu
+
+parse.unit = en
+
+/**
+ * convert `str` to ms
+ *
+ * @param {string} str
+ * @param {string} format
+ * @return {number|null}
+ */
+function parse(str = '', format = 'ms') {
+  let result = null, prevUnits
+
+  String(str)
+    .replace(new RegExp(`(\\d)[${parse.unit.placeholder}${parse.unit.group}](\\d)`, 'g'), '$1$2')  // clean up group separators / placeholders
+    .replace(parse.unit.decimal, '.') // normalize decimal separator
+    .replace(durationRE, (_, n, units) => {
+    // if no units, find next smallest units or fall back to format value
+    // eg. 1h30 -> 1h30m
+    if (!units) {
+      if (prevUnits) {
+        for (const u in parse.unit) if (parse.unit[u] < prevUnits) { units = u; break }
+      }
+      else units = format
+    }
+    else units = units.toLowerCase()
+
+    prevUnits = units = parse.unit[units] || parse.unit[units.replace(/s$/, '')]
+
+    if (units) result = (result || 0) + n * units
+  })
+
+  return result && ((result / (parse.unit[format] || 1)) * (str[0] === '-' ? -1 : 1))
+}
+
+
+/***/ }),
+
 /***/ 7045:
 /***/ ((module) => {
 
@@ -37431,6 +37408,23 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__nccwpck_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/node module decorator */
 /******/ 	(() => {
 /******/ 		__nccwpck_require__.nmd = (module) => {

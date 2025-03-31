@@ -1,5 +1,5 @@
 const core = require('@actions/core')
-const parseDuration = require('parse-duration')
+const parseDuration = require('parse-duration').default
 
 function getRawInputs() {
     const run = core.getInput('run')
