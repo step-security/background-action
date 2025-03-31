@@ -1,0 +1,43 @@
+name: "Tests"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  # unit tests
+  jest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: npm ci
+    - run: npm test
+
+  success:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - run: npm install
+    - uses: ./
+      with:
+        run: |
+          PORT=1212 node test/server.js &
+          PORT=2121 node test/server.js &
+          PORT=3232 node test/server.js &
+        wait-on: |
+          http://localhost:1212/bar
+          tcp:localhost:1212
+          http://localhost:2121/bar
+          tcp:localhost:2121
+          http://localhost:3232/bar
+          tcp:localhost:3232
+        log-output-resume: stderr
+        tail: true
+        wait-for: 5m
+        log-output: stderr,stdout
+    - run: sleep 30 # allow stderr to get output in the background
