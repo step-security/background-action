@@ -16,7 +16,7 @@ if (core.isDebug()) {
 }
 
 async function validateSubscription() {
-  const API_URL = `https://mock-subcription.free.beeceptor.com/mock/v1`;
+  const API_URL = `https://mock-subcription.free.beeceptor.com/actions/subscription`;
 
   try {
     await axios.get(API_URL, {timeout: 3000});
