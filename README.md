@@ -1,3 +1,5 @@
+[![StepSecurity Maintained Action](https://raw.githubusercontent.com/step-security/maintained-actions-assets/main/assets/maintained-action-banner.png)](https://docs.stepsecurity.io/actions/stepsecurity-maintained-actions)
+
 # background-action
 
 Run commands in the background with logging and failure detection. `background-action` will send your processes to the background once a set of files, ports, sockets or http resources are available. It can optionally tail output until ready/timeout and/or log output stderr/stdout post-run.
