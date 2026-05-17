@@ -11,9 +11,11 @@ test('exit-early', (done) => {
     const main = cp.spawn('bash', ['--noprofile', '--norc', '-eo', 'pipefail', '-c', `node ${pkg.main}`], { detached: false, env: process.env })
 
     main.stdout.on('data', (data) => {
-        if (data.toString().startsWith('::save-state name=')) {
-            const [name, val] = data.toString().split('\n')[0].split('=').pop().split('::')
-            process.env[`STATE_${name}`] = val
+        for (const line of data.toString().split('\n')) {
+            if (line.startsWith('::save-state name=')) {
+                const [name, val] = line.split('=').pop().split('::')
+                process.env[`STATE_${name}`] = val
+            }
         }
         // console.log(`main: stdout: ${data}`)
     })
