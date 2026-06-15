@@ -4937,13 +4937,12 @@ const internals = {};
 
 
 // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
-// # Version 2022032102, Last Updated Tue Mar 22 07:07:01 2022 UTC
+// # Version 2024012900, Last Updated Mon Jan 29 07:07:01 2024 UTC
 
 
 internals.tlds = [
     'AAA',
     'AARP',
-    'ABARTH',
     'ABB',
     'ABBOTT',
     'ABBVIE',
@@ -4959,7 +4958,6 @@ internals.tlds = [
     'ACO',
     'ACTOR',
     'AD',
-    'ADAC',
     'ADS',
     'ADULT',
     'AE',
@@ -4979,7 +4977,6 @@ internals.tlds = [
     'AIRTEL',
     'AKDN',
     'AL',
-    'ALFAROMEO',
     'ALIBABA',
     'ALIPAY',
     'ALLFINANZ',
@@ -5041,7 +5038,6 @@ internals.tlds = [
     'BABY',
     'BAIDU',
     'BANAMEX',
-    'BANANAREPUBLIC',
     'BAND',
     'BANK',
     'BAR',
@@ -5118,7 +5114,6 @@ internals.tlds = [
     'BRUSSELS',
     'BS',
     'BT',
-    'BUGATTI',
     'BUILD',
     'BUILDERS',
     'BUSINESS',
@@ -5138,7 +5133,6 @@ internals.tlds = [
     'CAM',
     'CAMERA',
     'CAMP',
-    'CANCERRESEARCH',
     'CANON',
     'CAPETOWN',
     'CAPITAL',
@@ -5160,7 +5154,6 @@ internals.tlds = [
     'CBA',
     'CBN',
     'CBRE',
-    'CBS',
     'CC',
     'CD',
     'CENTER',
@@ -5189,7 +5182,6 @@ internals.tlds = [
     'CITI',
     'CITIC',
     'CITY',
-    'CITYEATS',
     'CK',
     'CL',
     'CLAIMS',
@@ -5223,7 +5215,6 @@ internals.tlds = [
     'CONTACT',
     'CONTRACTORS',
     'COOKING',
-    'COOKINGCHANNEL',
     'COOL',
     'COOP',
     'CORSICA',
@@ -5329,7 +5320,6 @@ internals.tlds = [
     'ESQ',
     'ESTATE',
     'ET',
-    'ETISALAT',
     'EU',
     'EUROVISION',
     'EUS',
@@ -5355,7 +5345,6 @@ internals.tlds = [
     'FERRARI',
     'FERRERO',
     'FI',
-    'FIAT',
     'FIDELITY',
     'FIDO',
     'FILM',
@@ -5381,7 +5370,6 @@ internals.tlds = [
     'FO',
     'FOO',
     'FOOD',
-    'FOODNETWORK',
     'FOOTBALL',
     'FORD',
     'FOREX',
@@ -5394,7 +5382,6 @@ internals.tlds = [
     'FRESENIUS',
     'FRL',
     'FROGANS',
-    'FRONTDOOR',
     'FRONTIER',
     'FTR',
     'FUJITSU',
@@ -5487,7 +5474,6 @@ internals.tlds = [
     'HELSINKI',
     'HERE',
     'HERMES',
-    'HGTV',
     'HIPHOP',
     'HISAMITSU',
     'HITACHI',
@@ -5509,7 +5495,6 @@ internals.tlds = [
     'HOST',
     'HOSTING',
     'HOT',
-    'HOTELES',
     'HOTELS',
     'HOTMAIL',
     'HOUSE',
@@ -5595,8 +5580,8 @@ internals.tlds = [
     'KH',
     'KI',
     'KIA',
+    'KIDS',
     'KIM',
-    'KINDER',
     'KINDLE',
     'KITCHEN',
     'KIWI',
@@ -5621,7 +5606,6 @@ internals.tlds = [
     'LAMBORGHINI',
     'LAMER',
     'LANCASTER',
-    'LANCIA',
     'LAND',
     'LANDROVER',
     'LANXESS',
@@ -5652,7 +5636,6 @@ internals.tlds = [
     'LIMITED',
     'LIMO',
     'LINCOLN',
-    'LINDE',
     'LINK',
     'LIPSY',
     'LIVE',
@@ -5664,7 +5647,6 @@ internals.tlds = [
     'LOANS',
     'LOCKER',
     'LOCUS',
-    'LOFT',
     'LOL',
     'LONDON',
     'LOTTE',
@@ -5684,7 +5666,6 @@ internals.tlds = [
     'LV',
     'LY',
     'MA',
-    'MACYS',
     'MADRID',
     'MAIF',
     'MAISON',
@@ -5698,7 +5679,6 @@ internals.tlds = [
     'MARKETS',
     'MARRIOTT',
     'MARSHALLS',
-    'MASERATI',
     'MATTEL',
     'MBA',
     'MC',
@@ -5758,7 +5738,6 @@ internals.tlds = [
     'MU',
     'MUSEUM',
     'MUSIC',
-    'MUTUAL',
     'MV',
     'MW',
     'MX',
@@ -5799,7 +5778,6 @@ internals.tlds = [
     'NL',
     'NO',
     'NOKIA',
-    'NORTHWESTERNMUTUAL',
     'NORTON',
     'NOW',
     'NOWRUZ',
@@ -5818,7 +5796,6 @@ internals.tlds = [
     'OKINAWA',
     'OLAYAN',
     'OLAYANGROUP',
-    'OLDNAVY',
     'OLLO',
     'OM',
     'OMEGA',
@@ -5845,7 +5822,6 @@ internals.tlds = [
     'PARTNERS',
     'PARTS',
     'PARTY',
-    'PASSAGENS',
     'PAY',
     'PCCW',
     'PE',
@@ -5946,7 +5922,6 @@ internals.tlds = [
     'RIO',
     'RIP',
     'RO',
-    'ROCHER',
     'ROCKS',
     'RODEO',
     'ROGERS',
@@ -5981,7 +5956,6 @@ internals.tlds = [
     'SBI',
     'SBS',
     'SC',
-    'SCA',
     'SCB',
     'SCHAEFFLER',
     'SCHMIDT',
@@ -6001,7 +5975,6 @@ internals.tlds = [
     'SELECT',
     'SENER',
     'SERVICES',
-    'SES',
     'SEVEN',
     'SEW',
     'SEX',
@@ -6020,7 +5993,6 @@ internals.tlds = [
     'SHOPPING',
     'SHOUJI',
     'SHOW',
-    'SHOWTIME',
     'SI',
     'SILK',
     'SINA',
@@ -6118,7 +6090,6 @@ internals.tlds = [
     'TIAA',
     'TICKETS',
     'TIENDA',
-    'TIFFANY',
     'TIPS',
     'TIRES',
     'TIROL',
@@ -6148,7 +6119,6 @@ internals.tlds = [
     'TRADING',
     'TRAINING',
     'TRAVEL',
-    'TRAVELCHANNEL',
     'TRAVELERS',
     'TRAVELERSINSURANCE',
     'TRUST',
@@ -6203,14 +6173,12 @@ internals.tlds = [
     'VLAANDEREN',
     'VN',
     'VODKA',
-    'VOLKSWAGEN',
     'VOLVO',
     'VOTE',
     'VOTING',
     'VOTO',
     'VOYAGE',
     'VU',
-    'VUELOS',
     'WALES',
     'WALMART',
     'WALTER',
@@ -6328,7 +6296,6 @@ internals.tlds = [
     'XN--J1AMH',
     'XN--J6W193G',
     'XN--JLQ480N2RG',
-    'XN--JLQ61U9W7B',
     'XN--JVR189M',
     'XN--KCRX77D1X4A',
     'XN--KPRW13D',
@@ -6340,7 +6307,6 @@ internals.tlds = [
     'XN--MGBA3A3EJT',
     'XN--MGBA3A4F16A',
     'XN--MGBA7C0BBN0A',
-    'XN--MGBAAKC7DVF',
     'XN--MGBAAM7A8H',
     'XN--MGBAB2BD',
     'XN--MGBAH1A3HJKRD',
@@ -13087,12 +13053,12 @@ exports.template = function (value, messages, code, state, prefs) {
 
 exports.label = function (flags, state, prefs, messages) {
 
-    if (flags.label) {
-        return flags.label;
-    }
-
     if (!prefs.errors.label) {
         return '';
+    }
+
+    if (flags.label) {
+        return flags.label;
     }
 
     let path = state.path;
@@ -16713,7 +16679,11 @@ module.exports = Any.extend({
         label(name) {
 
             const obj = this.$_parent('label', name);
-            const each = (item, source) => (source.path[0] !== 'is' ? item.label(name) : undefined);
+            const each = (item, source) => {
+
+                return source.path[0] !== 'is' && typeof item._flags.label !== 'string' ? item.label(name) : undefined;
+            };
+
             return obj.$_modify({ each, ref: false });
         }
     },
@@ -16825,10 +16795,13 @@ internals.errors = function (failures, { error, state }) {
         const [type, code] = report.code.split('.');
         if (code !== 'base') {
             complex.push({ type: schema.type, report });
-            continue;
         }
-
-        valids.add(type);
+        else if (report.code === 'object.base') {
+            valids.add(report.local.type);
+        }
+        else {
+            valids.add(type);
+        }
     }
 
     // All errors are base types or valids
@@ -17546,6 +17519,7 @@ module.exports = Any.extend({
                     number: Object.create(null),
                     undefined: Object.create(null),
                     boolean: Object.create(null),
+                    bigint: Object.create(null),
                     object: new Map(),
                     function: new Map(),
                     custom: new Map()
@@ -18505,7 +18479,7 @@ module.exports = Any.extend({
 
     flags: {
 
-        unknown: { default: false }
+        unknown: { default: undefined }
     },
 
     terms: {
@@ -19446,7 +19420,7 @@ internals.unknown = function (schema, value, unprocessed, errors, state, prefs) 
         return;
     }
 
-    if (prefs.stripUnknown && !schema._flags.unknown ||
+    if (prefs.stripUnknown && typeof schema._flags.unknown === 'undefined' ||
         prefs.skipFunctions) {
 
         const stripUnknown = prefs.stripUnknown ? (prefs.stripUnknown === true ? true : !!prefs.stripUnknown.objects) : false;
@@ -19576,13 +19550,25 @@ module.exports = Any.extend({
         return schema.ref(ref);
     },
 
-    validate(value, { schema, state, prefs }) {
+    validate(value, { schema, state, prefs, error }) {
 
         Assert(schema.$_terms.link, 'Uninitialized link schema');
 
         const linked = internals.generate(schema, value, state, prefs);
         const ref = schema.$_terms.link[0].ref;
-        return linked.$_validate(value, state.nest(linked, `link:${ref.display}:${linked.type}`), prefs);
+
+        try {
+            return linked.$_validate(value, state.nest(linked, `link:${ref.display}:${linked.type}`), prefs);
+        }
+        catch (err) {
+            /* $lab:coverage:off$ */
+            if (!(err instanceof RangeError)) {
+                throw err;
+            }
+            /* $lab:coverage:on$ */
+
+            return { value, errors: error('link.depth') };
+        }
     },
 
     generate(schema, value, state, prefs) {
@@ -19633,6 +19619,10 @@ module.exports = Any.extend({
             obj.$_terms.whens.push({ concat: source });
             return obj.$_mutateRebuild();
         }
+    },
+
+    messages: {
+        'link.depth': '{{#label}} exceeds maximum recursion depth supported by the runtime'
     },
 
     manifest: {
@@ -19735,7 +19725,17 @@ const internals = {
     exponentialPartRegex: /[eE][+-]?\d+$/,
     leadingSignAndZerosRegex: /^[+-]?(0*)?/,
     dotRegex: /\./,
-    trailingZerosRegex: /0+$/
+    trailingZerosRegex: /0+$/,
+    decimalPlaces(value) {
+
+        const str = value.toString();
+        const dindex = str.indexOf('.');
+        const eindex = str.indexOf('e');
+        return (
+            (dindex < 0 ? 0 : (eindex < 0 ? str.length : eindex) - dindex - 1) +
+            (eindex < 0 ? 0 : Math.max(0, -parseInt(str.slice(eindex + 1))))
+        );
+    }
 };
 
 
@@ -19891,15 +19891,30 @@ module.exports = Any.extend({
         multiple: {
             method(base) {
 
-                return this.$_addRule({ name: 'multiple', args: { base } });
-            },
-            validate(value, helpers, { base }, options) {
+                const baseDecimalPlace = typeof base === 'number' ? internals.decimalPlaces(base) : null;
+                const pfactor = Math.pow(10, baseDecimalPlace);
 
-                if (value * (1 / base) % 1 === 0) {
-                    return value;
+                return this.$_addRule({
+                    name: 'multiple',
+                    args: {
+                        base,
+                        baseDecimalPlace,
+                        pfactor
+                    }
+                });
+            },
+            validate(value, helpers, { base, baseDecimalPlace, pfactor }, options) {
+
+                const valueDecimalPlace = internals.decimalPlaces(value);
+
+                if (valueDecimalPlace > baseDecimalPlace) {
+                    // Value with higher precision than base can never be a multiple
+                    return helpers.error('number.multiple', { multiple: options.args.base, value });
                 }
 
-                return helpers.error('number.multiple', { multiple: options.args.base, value });
+                return Math.round(pfactor * value) % Math.round(pfactor * base) === 0 ?
+                    value :
+                    helpers.error('number.multiple', { multiple: options.args.base, value });
             },
             args: [
                 {
@@ -19907,7 +19922,9 @@ module.exports = Any.extend({
                     ref: true,
                     assert: (value) => typeof value === 'number' && isFinite(value) && value > 0,
                     message: 'must be a positive number'
-                }
+                },
+                'baseDecimalPlace',
+                'pfactor'
             ],
             multi: true
         },
@@ -20124,7 +20141,11 @@ const internals = {
         }
     },
     dataUriRegex: /^data:[\w+.-]+\/[\w+.-]+;((charset=[\w-]+|base64),)?(.*)$/,
-    hexRegex: /^[a-f0-9]+$/i,
+    hexRegex: {
+        withPrefix: /^0x[0-9a-f]+$/i,
+        withOptionalPrefix: /^(?:0x)?[0-9a-f]+$/i,
+        withoutPrefix: /^[0-9a-f]+$/i
+    },
     ipRegex: Ip.regex({ cidr: 'forbidden' }).regex,
     isoDurationRegex: /^P(?!$)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(?=\d)(\d+H)?(\d+M)?(\d+S)?)?$/,
 
@@ -20465,16 +20486,22 @@ module.exports = Any.extend({
         hex: {
             method(options = {}) {
 
-                Common.assertOptions(options, ['byteAligned']);
+                Common.assertOptions(options, ['byteAligned', 'prefix']);
 
-                options = { byteAligned: false, ...options };
+                options = { byteAligned: false, prefix: false, ...options };
                 Assert(typeof options.byteAligned === 'boolean', 'byteAligned must be boolean');
+                Assert(typeof options.prefix === 'boolean' || options.prefix === 'optional', 'prefix must be boolean or "optional"');
 
                 return this.$_addRule({ name: 'hex', args: { options } });
             },
             validate(value, helpers, { options }) {
 
-                if (!internals.hexRegex.test(value)) {
+                const re = options.prefix === 'optional' ?
+                    internals.hexRegex.withOptionalPrefix :
+                    options.prefix === true ?
+                        internals.hexRegex.withPrefix :
+                        internals.hexRegex.withoutPrefix;
+                if (!re.test(value)) {
                     return helpers.error('string.hex');
                 }
 
@@ -20736,7 +20763,7 @@ module.exports = Any.extend({
         uri: {
             method(options = {}) {
 
-                Common.assertOptions(options, ['allowRelative', 'allowQuerySquareBrackets', 'domain', 'relativeOnly', 'scheme']);
+                Common.assertOptions(options, ['allowRelative', 'allowQuerySquareBrackets', 'domain', 'relativeOnly', 'scheme', 'encodeUri']);
 
                 if (options.domain) {
                     Common.assertOptions(options.domain, ['allowFullyQualified', 'allowUnicode', 'maxDomainSegments', 'minDomainSegments', 'tlds']);
@@ -20752,7 +20779,16 @@ module.exports = Any.extend({
                     return helpers.error('string.uri');
                 }
 
-                const match = regex.exec(value);
+                let match = regex.exec(value);
+
+                if (!match && helpers.prefs.convert && options.encodeUri) {
+                    const encoded = encodeURI(value);
+                    match = regex.exec(encoded);
+                    if (match) {
+                        value = encoded;
+                    }
+                }
+
                 if (match) {
                     const matched = match[1] || match[2];
                     if (domain &&
@@ -20833,7 +20869,7 @@ module.exports = Any.extend({
 internals.addressOptions = function (options) {
 
     if (!options) {
-        return options;
+        return internals.tlds || options;      // $lab:coverage:ignore$
     }
 
     // minDomainSegments
@@ -39660,7 +39696,7 @@ function parse(str = '', format = 'ms') {
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"name":"joi","description":"Object schema validation","version":"17.11.0","repository":"git://github.com/hapijs/joi","main":"lib/index.js","types":"lib/index.d.ts","browser":"dist/joi-browser.min.js","files":["lib/**/*","dist/*"],"keywords":["schema","validation"],"dependencies":{"@hapi/hoek":"^9.0.0","@hapi/topo":"^5.0.0","@sideway/address":"^4.1.3","@sideway/formula":"^3.0.1","@sideway/pinpoint":"^2.0.0"},"devDependencies":{"@hapi/bourne":"2.x.x","@hapi/code":"8.x.x","@hapi/joi-legacy-test":"npm:@hapi/joi@15.x.x","@hapi/lab":"^25.0.1","@types/node":"^14.18.24","typescript":"4.3.x"},"scripts":{"prepublishOnly":"cd browser && npm install && npm run build","test":"lab -t 100 -a @hapi/code -L -Y","test-cov-html":"lab -r html -o coverage.html -a @hapi/code"},"license":"BSD-3-Clause"}');
+module.exports = JSON.parse('{"name":"joi","description":"Object schema validation","version":"17.13.4","repository":"git://github.com/hapijs/joi","main":"lib/index.js","types":"lib/index.d.ts","browser":"dist/joi-browser.min.js","files":["lib/**/*","dist/*"],"keywords":["schema","validation"],"dependencies":{"@hapi/hoek":"^9.3.0","@hapi/topo":"^5.1.0","@sideway/address":"^4.1.5","@sideway/formula":"^3.0.1","@sideway/pinpoint":"^2.0.0"},"devDependencies":{"@hapi/bourne":"2.x.x","@hapi/code":"8.x.x","@hapi/joi-legacy-test":"npm:@hapi/joi@15.x.x","@hapi/lab":"^25.1.3","@types/node":"^14.18.63","typescript":"4.3.x"},"scripts":{"prepublishOnly":"cd browser && npm install && npm run build","test":"lab -t 100 -a @hapi/code -L -Y","test-cov-html":"lab -r html -o coverage.html -a @hapi/code"},"license":"BSD-3-Clause"}');
 
 /***/ }),
 
