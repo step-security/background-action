@@ -18,39 +18,83 @@ function getRawInputs() {
     const logOutputResume = core.getInput('log-output-resume')
     const logOutputIf = core.getInput('log-output-if')
     const workingDirectory = core.getInput('working-directory')
+    const shutdown = core.getInput('shutdown')
+    const shutdownGrace = core.getInput('shutdown-grace')
 
-    return { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory }
+    return { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory, shutdown, shutdownGrace }
 }
 
-function parseLogOption(str) {
-    const option = { stdout: false, stderr: false }
-    if (str === 'true') return { stdout: true, stderr: true }
-    if (str === 'false') return option
-    if (str.includes('stdout')) option.stdout = true
-    if (str.includes('stderr')) option.stderr = true
+// split a comma/whitespace separated input and reject anything outside the allowed set --
+// substring matching used to turn `no-stderr` into "enable stderr" and typos into silence
+function parseTokens(str, allowed, name) {
+    const tokens = str.split(/[\s,]+/).filter(token => token !== '')
+    const invalid = tokens.filter(token => allowed.includes(token) === false)
 
-    return option
+    if (invalid.length) {
+        throw new Error(`Invalid input for: ${name}, expecting: ${allowed.join(',')} received: ${invalid.join(',')}`)
+    }
+
+    return tokens
+}
+
+// parse-duration is lenient: nonsense yields null, negatives stay negative, and it will pull
+// `123` out of `abc123` -- which silently becomes a 123 millisecond timeout. Require something
+// that at least starts like a duration, and a positive finite result.
+function parseDurationInput(str, name) {
+    const ms = /^\d/.test(str) ? parseDuration(str) : null
+
+    if (Number.isFinite(ms) === false || ms <= 0) {
+        throw new Error(`Invalid input for: ${name}, expecting a positive duration (eg 30s, 5m, 1h30m) received: ${str}`)
+    }
+
+    return ms
+}
+
+function parseLogOption(str, name) {
+    const tokens = parseTokens(str, ['true', 'false', 'stdout', 'stderr'], name)
+
+    if (tokens.includes('true')) return { stdout: true, stderr: true }
+
+    return { stdout: tokens.includes('stdout'), stderr: tokens.includes('stderr') }
 }
 
 function normalizeInputs(inputs) {
-    let { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory } = inputs
+    let { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory, shutdown, shutdownGrace } = inputs
 
-    tail = parseLogOption(tail)
-    logOutputResume = parseLogOption(logOutputResume)
-    logOutput = parseLogOption(logOutput)
+    tail = parseLogOption(tail, 'tail')
+    logOutputResume = parseLogOption(logOutputResume, 'log-output-resume')
+    logOutput = parseLogOption(logOutput, 'log-output')
 
-    if (logOutputIf && /true|false|failure|exit-early|timeout|success/.test(logOutputIf) == false) {
-        throw new Error(`Invalid input for: log-output-if, expecting: true,false,failure,exit-early,timeout,success received: ${logOutputIf}`)
-    }
+    shutdown = shutdown !== 'false'
+    shutdownGrace = parseDurationInput(shutdownGrace || '10s', 'shutdown-grace')
+
+    const waitForMs = parseDurationInput(waitFor, 'wait-for')
+
+    // action.yml documented `early-exit` from the initial commit while input.js, post-run.js
+    // and index.js all use `exit-early`; accept the spelling we published
+    logOutputIf = logOutputIf.replace(/\bearly-exit\b/g, 'exit-early')
+    logOutputIf = parseTokens(logOutputIf, ['true', 'false', 'failure', 'exit-early', 'timeout', 'success'], 'log-output-if')
+
+    let waitOnConfig
 
     try {
         // allow JSON configurations for advanced usage
-        const waitOnConfig = JSON.parse(waitOn)
+        waitOnConfig = JSON.parse(waitOn)
+    } catch {
+        // not JSON -- fall through and treat the input as a resource list
+    }
+
+    if (waitOnConfig !== null && typeof waitOnConfig === 'object') {
+        // a JSON config supersedes wait-for; its own timeout applies
+        if (Array.isArray(waitOnConfig.resources) === false) {
+            throw new Error('Invalid input for: wait-on, a JSON configuration must include a resources array, see: https://github.com/jeffbski/wait-on#readme')
+        }
+
         waitOn = waitOnConfig
-    } catch (e) {
+    } else {
         waitOn = {
             resources: waitOn.split(/\n|,/).map(resource => resource.trim()).filter(line => line !== ''),
-            timeout: parseDuration(waitFor),
+            timeout: waitForMs,
             verbose: core.isDebug(),
             log: !tail.stderr && !tail.stdout // provide some interactive feedback if we're not tailing
         }
@@ -58,7 +102,7 @@ function normalizeInputs(inputs) {
         if (waitOn.resources.length === 0) throw new Error('You must provide one or more resources, see: https://github.com/jeffbski/wait-on#readme')
     }
 
-    return { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory }
+    return { run, name, waitOn, waitFor, tail, logOutput, logOutputResume, logOutputIf, workingDirectory, shutdown, shutdownGrace }
 }
 
 module.exports = normalizeInputs(getRawInputs())
@@ -34557,18 +34601,20 @@ const inputs = __nccwpck_require__(5813)
 const fs = __nccwpck_require__(7147)
 const path = __nccwpck_require__(1017)
 
-const { logOutput, logOutputResume, logOutputIf, workingDirectory } = inputs
+const { logOutput, logOutputResume, logOutputIf, workingDirectory, shutdown, shutdownGrace } = inputs
 
+const shellPid = parseInt(core.getState('shell-pid') || 0, 10)
 const pid = core.getState('post-run')
 const reason = core.getState(`reason_${pid}`)
 const stdout = parseInt(core.getState('stdout') || 0, 10)
 const stderr = parseInt(core.getState('stderr') || 0, 10)
 
-const cwd = workingDirectory || process.env.GITHUB_WORKSPACE || './'
-const stdoutPath = path.join(cwd, `${pid}.out`)
-const stderrPath = path.join(cwd, `${pid}.err`)
+// must resolve to the same location index.js wrote to (#199)
+const logDir = process.env.RUNNER_TEMP || workingDirectory || process.env.GITHUB_WORKSPACE || './'
+const stdoutPath = path.resolve(logDir, `${pid}.out`)
+const stderrPath = path.resolve(logDir, `${pid}.err`)
 
-const shouldLog = logOutputIf === 'true' || logOutputIf === reason || (logOutputIf === 'failure' && (reason === 'exit-early' || reason === 'timeout'))
+const shouldLog = logOutputIf.includes('true') || logOutputIf.includes(reason) || (logOutputIf.includes('failure') && (reason === 'exit-early' || reason === 'timeout'))
 
 if (core.isDebug()) {
   core.debug(`stdout: ${stdout}`)
@@ -34582,7 +34628,47 @@ if (core.isDebug()) {
   core.debug(`workingDirectory: ${workingDirectory}`)
   core.debug(`pid: ${pid}`)
   core.debug(`reason: ${reason}`)
-  core.debug(`cwd: ${cwd}`)
+  core.debug(`logDir: ${logDir}`)
+}
+
+function groupIsAlive(pgid) {
+  try {
+    process.kill(-pgid, 0)
+    return true
+  } catch (err) {
+    // ESRCH means the group is gone; EPERM means it survives but we may not signal it
+    return err.code === 'EPERM'
+  }
+}
+
+// signal the process group the main invocation left running and give it a chance to exit
+// cleanly, so anything it writes on the way down lands in the logs we are about to stream
+async function shutdownProcessGroup(pgid, graceMs) {
+  if (!pgid) return
+
+  try {
+    // negated pid targets the whole group -- index.js spawns detached, making the shell a
+    // group leader, so this reaches every process the user backgrounded
+    process.kill(-pgid, 'SIGTERM')
+  } catch (err) {
+    if (err.code !== 'ESRCH') core.warning(`background-action could not signal process group ${pgid}: ${err.message}`)
+    return
+  }
+
+  const deadline = Date.now() + graceMs
+
+  while (Date.now() < deadline) {
+    if (!groupIsAlive(pgid)) return
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
+
+  core.warning(`background-action process group ${pgid} did not exit within ${graceMs}ms, sending SIGKILL`)
+
+  try {
+    process.kill(-pgid, 'SIGKILL')
+  } catch {
+    // already exited between the deadline check and here
+  }
 }
 
 function streamLog(path, start) {
@@ -34624,6 +34710,9 @@ async function streamLogs() {
 
 (async() => {
     try {
+      // shut down before streaming so shutdown output is included in the captured logs
+      if (shutdown) await shutdownProcessGroup(shellPid, shutdownGrace)
+
       if (shouldLog) {
         await streamLogs()
       }
@@ -34633,6 +34722,7 @@ async function streamLogs() {
         process.exit(0)
     }
 })();
+
 
 /***/ }),
 
@@ -40963,10 +41053,47 @@ const inputs = __nccwpck_require__(5813)
 const { run, workingDirectory, waitOn, tail, logOutput } = inputs
 const POST_RUN = core.getState('post-run')
 
+// keep logs out of the workspace, where automated commits can sweep them into the repo (#199);
+// fall back to the old location when RUNNER_TEMP is absent (local runs, tests)
+const logDir = process.env.RUNNER_TEMP || workingDirectory || process.env.GITHUB_WORKSPACE || './'
+// resolve() not join(): these are handed to a shell whose cwd is the working-directory,
+// so a relative path would be resolved a second time against it
+const stdErrFile = path.resolve(logDir, `${process.pid}.err`)
+const stdOutFile = path.resolve(logDir, `${process.pid}.out`)
+
+// A bare `wait` blocks until every backgrounded job has exited and reports none of their
+// statuses, so a service that dies on startup goes unnoticed until the readiness check times
+// out -- the timeout this action exists to prevent.
+//
+// `wait -n` returns as soon as any single job exits, surfacing the first failure immediately,
+// but it needs bash 4.3+ and the macOS runner image still ships 3.2. The fallback tracks the
+// backgrounded pids and polls them, recovering each status with `wait <pid>` once one goes
+// away, so both shells behave the same. Job control (`set -m`) is deliberately not used: it
+// would put every job in its own process group and break post-run's group shutdown.
+const WAIT_FOR_JOBS = `if ((BASH_VERSINFO[0] > 4)) || ((BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 3)); then
+  while [ -n "$(jobs -rp)" ]; do wait -n || exit $?; done
+else
+  __ba_pids=$(jobs -rp)
+  while [ -n "$__ba_pids" ]; do
+    __ba_alive=""
+    for __ba_pid in $__ba_pids; do
+      if kill -0 "$__ba_pid" 2>/dev/null; then
+        __ba_alive="$__ba_alive $__ba_pid"
+      else
+        wait "$__ba_pid" || exit $?
+      fi
+    done
+    __ba_pids="$__ba_alive"
+    if [ -n "$__ba_pids" ]; then sleep 0.2; fi
+  done
+fi`
+
 let stderr, stdout
 
 if (core.isDebug()) {
-  console.log(process.env)
+  core.debug(`logDir: ${logDir}`)
+  core.debug(`stdOutFile: ${stdOutFile}`)
+  core.debug(`stdErrFile: ${stdErrFile}`)
 }
 
 async function validateSubscription() {
@@ -41025,9 +41152,9 @@ if (POST_RUN) {
     await validateSubscription();
     core.saveState('post-run', process.pid)
 
-    const cwd = workingDirectory || process.env.GITHUB_WORKSPACE || './'
-    const stdErrFile = path.join(cwd, `${process.pid}.err`)
-    const stdOutFile = path.join(cwd, `${process.pid}.out`)
+    // publish the paths so workflows can upload the logs as artifacts (#193)
+    core.setOutput('stdout-log', stdOutFile)
+    core.setOutput('stderr-log', stdErrFile)
 
     const checkStderr = setInterval(() => {
       stderr = TailWrapper(stdErrFile, tail.stderr, core.info)
@@ -41050,8 +41177,12 @@ async function exitHandler(error, reason) {
   if (stderr && stderr.unwatch) stderr.unwatch()
 
   core.saveState(`reason_${process.pid}`, reason)
-  if (stdout && stdout.pos) core.saveState('stdout', stdout.pos)
-  if (stderr && stderr.pos) core.saveState('stderr', stderr.pos)
+
+  const stdoutPos = tailPosition(stdout)
+  const stderrPos = tailPosition(stderr)
+
+  if (stdoutPos) core.saveState('stdout', stdoutPos)
+  if (stderrPos) core.saveState('stderr', stderrPos)
 
   if (error) {
     core.error(error)
@@ -41061,7 +41192,9 @@ async function exitHandler(error, reason) {
 }
 
 function runCommand(run) {
-  let cmd = `(${run} wait)`
+  // the wait logic must start on its own line: core.getInput() strips the trailing newline,
+  // so inlining it makes it an argument of the user's last command (#210)
+  let cmd = `(${run}\n${WAIT_FOR_JOBS})`
 
   const spawnOpts = { detached: true, stdio: 'ignore' }
 
@@ -41070,12 +41203,22 @@ function runCommand(run) {
   const pipeStdout = tail.stdout || logOutput.stdout
   const pipeStderr = tail.stderr || logOutput.stderr
 
-  if (pipeStdout) cmd += ` > ${process.pid}.out`
-  if (pipeStderr) cmd += ` 2> ${process.pid}.err`
+  // absolute paths: the shell's cwd is the working-directory, which is no longer where logs live
+  if (pipeStdout) cmd += ` > "${stdOutFile}"`
+  if (pipeStderr) cmd += ` 2> "${stdErrFile}"`
 
   const shell = spawn('bash', ['--noprofile', '--norc', '-eo', 'pipefail', '-c', cmd], spawnOpts)
+
+  // detached makes the shell a process group leader, so post-run can signal the whole
+  // group -- bash plus everything the user backgrounded -- by its negated pid
+  core.saveState('shell-pid', shell.pid)
+
   shell.on('error', (err) => exitHandler(err, 'exit-early'))
-  shell.on('close', () => exitHandler(new Error('Exited early'), 'exit-early'))
+  shell.on('close', (code) => exitHandler(new Error(`Exited early with status ${code}`), 'exit-early'))
+}
+
+function tailPosition(tail) {
+  return tail?.currentCursorPos ?? tail?.pos
 }
 
 function TailWrapper(filename, shouldTail, output) {
@@ -41086,7 +41229,7 @@ function TailWrapper(filename, shouldTail, output) {
     tail.on('line', output)
     tail.on('error', core.warning)
     return tail
-  } catch (e) {
+  } catch {
     console.warn('background-action tried to tail a file before it was ready....')
     return false
   }
