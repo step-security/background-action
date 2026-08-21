@@ -45,7 +45,7 @@ jobs:
       API_PORT: 1212
     steps:
       - uses: actions/checkout@v4
-      - uses: step-security/background-action@v1
+      - uses: step-security/background-action@v2
         name: Bootstrap System Under Test (SUT)
         with:
           run: |
@@ -132,13 +132,13 @@ Logs are written under `RUNNER_TEMP` so they never land in your repository. To k
 the job, or to hand them to a later job, upload them as an artifact:
 
 ```yaml
-      - uses: step-security/background-action@v1
+      - uses: step-security/background-action@v2
         id: sut
         with:
           run: npm start &
           wait-on: http://localhost:3000
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: system-under-test-logs
