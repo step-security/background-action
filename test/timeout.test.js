@@ -2,31 +2,30 @@ const process = require('process')
 const cp = require('child_process')
 const core = require('@actions/core')
 const pkg = require('../package.json');
+const saveState = require('./save-state')
+
+const freePorts = require('./free-ports')
+
+let env
+
+beforeAll(async () => { env = require('./timeout-env')(await freePorts(4)) })
 
 jest.setTimeout(30000)
 
 // shows how the runner will run a javascript action with env / stdout protocol
 test('timeout', (done) => {
-    Object.assign(process.env, require('./timeout-env'))
+    Object.assign(process.env, env)
 
     const main = cp.spawn('bash', ['--noprofile', '--norc', '-eo', 'pipefail', '-c', `node ${pkg.main}`], { detached: false, env: process.env })
 
-    main.stdout.on('data', (data) => {
-        for (const line of data.toString().split('\n')) {
-            if (line.startsWith('::save-state name=')) {
-                const [name, val] = line.split('=').pop().split('::')
-                console.log(`STATE_${name}=${val}`)
-                process.env[`STATE_${name}`] = val
-            }
-        }
-        //console.log(`main: stdout: ${data}`)
-    })
+    const mainOutput = saveState.collect(main.stdout)
 
     /*main.stderr.on('data', (data) => {
         console.error(`main: stderr: ${data}`)
     })*/
 
     main.on('close', (code) => {
+        saveState.apply(mainOutput(), process.env)
         console.log(`main exited with code ${code}`)
 
         const pid = core.getState('post-run')
